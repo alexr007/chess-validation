@@ -62,8 +62,8 @@ object Chess {
   def encolorColor(c: Color) = {
     val cs = s"  $c  "
     c match {
-      case White => BG.Black(FG.DarkGray(cs))
-      case Black => BG.White(FG.LightGray(cs))
+      case White => BG.White(FG.DarkGray(cs))
+      case Black => BG.Black(FG.LightGray(cs))
     }
   }
 
