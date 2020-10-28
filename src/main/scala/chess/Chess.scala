@@ -10,10 +10,16 @@ case class Chess(private val board: Board, nextC: Color, check: Option[Color] = 
     Chess(b, next, Option.when(check)(next))
   }
 
-  def checkStartCell(m: Move) =
+  def startCellIsNotEmpty(m: Move) =
+    Either.cond(!board.isFreeAt(m.start),
+      m,
+      ImStartCellIsEmpty(m)
+    )
+
+  def startCellIsRightColor(m: Move) =
     Either.cond(board.isColorAt(m.start, nextC),
       m,
-      ImWrongColorAtStartCell(m, nextC)
+      ImStartCellHasWrongColor(m, nextC)
     )
 
   def validateFigureMove(m: Move) =
@@ -31,7 +37,8 @@ case class Chess(private val board: Board, nextC: Color, check: Option[Color] = 
 
   def moveValidated(m: String) =
     Move.parse(m)
-      .flatMap(checkStartCell)
+      .flatMap(startCellIsNotEmpty)
+      .flatMap(startCellIsRightColor)
       .flatMap(validateFigureMove)
       .flatMap(m => board.move(m).map(b => (m, b)))
       .flatMap((wasCheckCleared _).tupled)

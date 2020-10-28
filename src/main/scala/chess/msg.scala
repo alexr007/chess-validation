@@ -6,9 +6,9 @@ object msg {
   def errorParsingLocation(loc: String) = s"Error parsing location: `$loc`."
   def errorParsingMove(move: String) = s"Error parsing move: `$move`."
 
-  def wrongColorAtStartCell(m: Move, c: Color) = im(m)(s"Cell `${m.start}` has the wrong color: $c or empty, expected to be ${c.another}.")
-  def invalidMoveInCheck(m: Move, c: Color) = im(m)(s"$c is still in CHECK.")
   def startCellIsEmpty(m: Move) = im(m)(s"Start cell `${m.start}` is empty.")
+  def startCellHasWrongColor(m: Move, c: Color) = im(m)(s"Cell `${m.start}` has the wrong color: $c, expected to be ${c.another}.")
+  def invalidMoveInCheck(m: Move, c: Color) = im(m)(s"$c is still in CHECK.")
 
   def targetNotInList(m: Move) = im(m)(s"${tc(m)} not in the list of possible moves")
   def pathIsNotClean(m: Move) = im(m)(s"Path to ${m.finish} isn't clean")
