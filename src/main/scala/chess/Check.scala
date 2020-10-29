@@ -5,8 +5,8 @@ import chess.Directions._
 object Check {
 
   def oppFigures(c: Color) = {
-    val another = c.another
-    (Queen(another), Rook(another), Bishop(another), Knight(another), Pawn(another))
+    val a = c.another
+    (Queen(a), Rook(a), Bishop(a), Knight(a), Pawn(a))
   }
 
   def isKingInCheck(b: Board, c: Color): Boolean = {

@@ -73,7 +73,7 @@ object Directions {
     def unapply(as: (Loc, Board)) = as match {
       case IsWhite(dy) => Some(dy * 1)
       case IsBlack(dy) => Some(dy * 1)
-      case _             => None
+      case _           => None
     }
   }
 
@@ -85,7 +85,7 @@ object Directions {
     def unapply(as: (Loc, Board)) = as match {
       case IsWhite(dy) if as._1.y == 2 => Some(dy * 2)
       case IsBlack(dy) if as._1.y == 7 => Some(dy * 2)
-      case _                             => None
+      case _                           => None
     }
   }
 

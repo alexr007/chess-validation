@@ -6,7 +6,7 @@ import ExceptionSyntax._
 class Board(private val a: TBoard) {
   /** implementation dependent operations */
   private def at(x: Int, y: Int): TCell = a(y - 1)(x - 1)
-  private def upd(loc: Loc, of: TCell) = new Board(a.updated(loc.y - 1, a(loc.y -1).updated(loc.x - 1, of)))
+  private def upd(loc: Loc, of: TCell) = new Board(a.updated(loc.y - 1, a(loc.y - 1).updated(loc.x - 1, of)))
   /** basic low level operations, made public only for tests */
   def put(loc: Loc, f: CFigure) = upd(loc, Some(f))
   def clear(loc: Loc) = upd(loc, None)
@@ -61,6 +61,7 @@ object Board {
       firstRow(Black)
     )
   )
+
   def findKing(b: Board, c: Color) =
     (1 to 8).flatMap { y =>
       (1 to 8)

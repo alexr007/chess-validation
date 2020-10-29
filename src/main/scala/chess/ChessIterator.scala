@@ -2,6 +2,11 @@ package chess
 
 import com.whitehatgaming._
 
+/**
+  * integration with given
+  * [[com.whitehatgaming.UserInput]]
+  * [[com.whitehatgaming.UserInputFile]]
+  */
 class ChessIterator private (fileName: String) extends Iterator[Array[Int]] {
   private val ui: UserInput = new UserInputFile(fileName)
   private var line: Array[Int] = _

@@ -44,7 +44,7 @@ sealed abstract class CFigure(val c: Color, private val s: Char) {
     def checkTargetInPossible(m: Move) =
       nextFrom(m.start, b)
         .find(_.contains(m.finish))
-        .toRight(ImIFMTargetNotInList(m))
+        .toRight(ImIFMTargetIsNotInList(m))
 
     /**
       * for pawn forward move - target must be empty

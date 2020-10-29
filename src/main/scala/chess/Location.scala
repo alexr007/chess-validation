@@ -67,7 +67,9 @@ object Move {
         x <- Loc.parse(s1)
         y <- Loc.parse(s2)
       } yield Move(x, y) }
-    match { // we don't have Cats to use leftMap, bt this is only for tests
+      // we don't want to expose underlying ImErrorParsingLocation
+      // we don't use Cats to use leftMap,
+    match {
       case Right(m) => Right(m)
       case Left(_)  => Left(ImErrorParsingMove(move))
     }
@@ -75,11 +77,11 @@ object Move {
   def apply(move: String): Move = parseOrDie(move)
 
   /** align implementation done to the interface given */
-  private def xx(x: Int) = (x + 'a').toChar
-  private def yy(y: Int) = (7 - y + '1').toChar
+  private def x(x: Int) = (x + 'a').toChar
+  private def y(y: Int) = (7 - y + '1').toChar
   /** array has length 4 because of underline given implementation */
   def fromArray(move: Array[Int]) = move match {
-    case Array(w,x,y,z) => s"${xx(w)}${yy(x)}${xx(y)}${yy(z)}"
+    case Array(sx, sy, tx, ty) => s"${x(sx)}${y(sy)}${x(tx)}${y(ty)}"
   }
 
 }
