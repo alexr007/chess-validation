@@ -35,7 +35,7 @@ case class Chess(private val board: Board, nextC: Color, check: Option[Color] = 
   def isNextInCheck(b: Board) =
     Check.isKingInCheck(b, nextC.another)
 
-  def validateToMove(m: Move) =
+  def tryToMove(m: Move) =
     Right(m)
       .flatMap(startCellIsNotEmpty)
       .flatMap(startCellIsRightColor)
@@ -45,7 +45,7 @@ case class Chess(private val board: Board, nextC: Color, check: Option[Color] = 
 
   def moveValidated(m: String) =
     Move.parse(m)
-      .flatMap(validateToMove)
+      .flatMap(tryToMove)
       .map(b => (b, isNextInCheck(b)))
       .fold(
         im             => (this,        Some(im)),  // same board + error
@@ -58,7 +58,7 @@ case class Chess(private val board: Board, nextC: Color, check: Option[Color] = 
       Directions.mvKing(kingAt)
         .flatten
         .map(Move(kingAt, _))
-        .flatMap(validateToMove(_).toOption)
+        .flatMap(tryToMove(_).toOption)
         .isEmpty
     }
 
