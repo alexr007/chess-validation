@@ -52,17 +52,14 @@ case class Chess(private val board: Board, nextC: Color, check: Option[Color] = 
         { case (b, ch) => (nextMove(b, ch), None) } // new board, switched color, new "check"
       )
 
-  def isKingInCheckmate =
-    check.flatMap { c =>
+  def isCheckMate =
+    check.filter { c =>
       val kingAt: Loc = board.findKingOrDie(c)
       Directions.mvKing(kingAt)
         .flatten
         .map(Move(kingAt, _))
         .flatMap(validateToMove(_).toOption)
-      match {
-        case Nil => Some(c) // no available moves => Checkmate
-        case _   => None    // there are moves    => OK
-      }
+        .isEmpty
     }
 
   override def toString: String = board.toString
@@ -96,7 +93,7 @@ object Chess {
     invalid.foreach(m => println(s"$msg ${m.rep}"))
     chess2.check
       .map { c => println(encolorColor(c) + FG.Red(">CHECK!<").toString); c }
-      .flatMap(_ => chess2.isKingInCheckmate)
+      .flatMap(_ => chess2.isCheckMate)
       .foreach(c => println(encolorColor(c) + FG.Red(">MATE!!<").toString))
     printLine()
   }
