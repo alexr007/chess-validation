@@ -35,18 +35,35 @@ case class Chess(private val board: Board, nextC: Color, check: Option[Color] = 
   def isNextInCheck(b: Board) =
     Check.isKingInCheck(b, nextC.another)
 
-  def moveValidated(m: String) =
-    Move.parse(m)
+  def validateToMove(m: Move) =
+    Right(m)
       .flatMap(startCellIsNotEmpty)
       .flatMap(startCellIsRightColor)
       .flatMap(validateFigureMove)
       .flatMap(m => board.move(m).map(b => (m, b)))
       .flatMap((wasCheckCleared _).tupled)
+
+  def moveValidated(m: String) =
+    Move.parse(m)
+      .flatMap(validateToMove)
       .map(b => (b, isNextInCheck(b)))
       .fold(
         im             => (this,        Some(im)),  // same board + error
         { case (b, ch) => (nextMove(b, ch), None) } // new board, switched color, new "check"
       )
+
+  def isKingInCheckmate =
+    check.flatMap { c =>
+      val kingAt: Loc = board.findKingOrDie(c)
+      Directions.mvKing(kingAt)
+        .flatten
+        .map(Move(kingAt, _))
+        .flatMap(validateToMove(_).toOption)
+      match {
+        case Nil => Some(c) // no available moves => Checkmate
+        case _   => None    // there are moves    => OK
+      }
+    }
 
   override def toString: String = board.toString
 
@@ -65,7 +82,7 @@ object Chess {
       case White => BG.White(FG.DarkGray(cs))
       case Black => BG.Black(FG.LightGray(cs))
     }
-  }
+  }.toString()
 
   def beforeMove(chess: Chess, move: String) = {
     val cs = encolorColor(chess.nextC)
@@ -77,7 +94,10 @@ object Chess {
     val msg = FG.Red("message:")
     println(chess2.board)
     invalid.foreach(m => println(s"$msg ${m.rep}"))
-    chess2.check.foreach(c => println(encolorColor(c).toString() + FG.Red(">CHECK!<").toString))
+    chess2.check
+      .map { c => println(encolorColor(c) + FG.Red(">CHECK!<").toString); c }
+      .flatMap(_ => chess2.isKingInCheckmate)
+      .foreach(c => println(encolorColor(c) + FG.Red(">MATE!!<").toString))
     printLine()
   }
 
