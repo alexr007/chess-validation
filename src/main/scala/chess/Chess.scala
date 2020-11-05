@@ -55,21 +55,25 @@ case class Chess(private val board: Board, nextC: Color, check: Option[Color] = 
 
   override def toString: String = board.toString
 
-  // TODO
-  def isCheckMate = canMoveKing || canBiteThreat || canCrossThreat
+  def isCheckMate = check.filter(!canFix(_))
 
+  def canFix(c: Color) = canMoveKingAwayThreat(c) || canBiteThreat || canCrossThreat
+
+  // TODO
   def canBiteThreat = true
+
+  // TODO
   def canCrossThreat = true
 
-  def canMoveKing =
-    check.filter { c =>
-      val kingAt = board.findKingOrDie(c)
-      Directions.mvKing(kingAt)
-        .flatten
-        .map(Move(kingAt, _))
-        .flatMap(tryToMove(_).toOption)
-        .isEmpty
-    }.fold(true)(_ => false)
+  // TODO
+  def canMoveKingAwayThreat(c: Color) = {
+    val kingAt = board.findKingOrDie(c)
+    Directions.mvKing(kingAt)
+      .flatten
+      .map(Move(kingAt, _))
+      .flatMap(tryToMove(_).toOption)
+      .nonEmpty
+  }
 }
 
 object Chess {
